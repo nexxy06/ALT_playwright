@@ -1,0 +1,6 @@
+tar: v@version@:.
+spec: .gear/python3-module-playwright.spec
+copy: .gear/datasets/playwright-1.55.0-beta-1756314050000-linux.zip
+copy?: .gear/*.patch
+
+
