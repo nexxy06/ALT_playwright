@@ -20,6 +20,7 @@ import subprocess
 import sys
 import zipfile
 from typing import Dict
+from pathlib import Path
 
 driver_version = "1.55.0-beta-1756314050000"
 
@@ -176,7 +177,7 @@ class PlaywrightBDistWheelCommand(BDistWheelCommand):
             if InWheel:
                 wheelhouse_whl = os.path.join("wheelhouse", os.path.basename(whlfile))
                 shutil.move(whlfile, wheelhouse_whl)
-                with InWheel(in_wheel=wheelhouse_whl, out_wheel=whlfile):
+                with InWheel(in_wheel=Path(wheelhouse_whl), out_wheel=Path(whlfile)):
                     print(f"Updating RECORD file of {whlfile}")
         print("Copying new wheels")
         shutil.rmtree("wheelhouse")

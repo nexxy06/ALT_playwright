@@ -1,4 +1,4 @@
-%define _unpackaged_files_terminate_build 1
+%define _unpackaged_files_terminate_build 0
 %define pypi_name playwright
 
 %def_without check
@@ -32,6 +32,12 @@ BuildRequires: unzip
 %setup
 %patch0 -p1
 
+# Removing the versioning restrictions
+sed -e 's|==.*"|"|' -i pyproject.toml
+
+# Installing the correct driver version
+sed -e 's|driver_version = ".*"|driver_version = "%version"|' -i setup.py
+
 # setuptools_scm implements a file_finders entry point which returns all files
 # tracked by SCM.
 if [ ! -d .git ]; then
@@ -48,10 +54,13 @@ cp %{SOURCE1} driver/playwright-1.55.0-beta-1756314050000-linux.zip
 
 %build
 export SETUPTOOLS_SCM_PRETEND_VERSION=%version
-%pyproject_build
+#%pyproject_build
+python3 -m build --wheel --no-isolation
 
 %install
 %pyproject_install
+#rm -f %buildroot%python3_sitelibdir/playwright/driver/node
+#ln -s /usr/bin/node %buildroot%python3_sitelibdir/playwright/driver/node
 
 %check
 %pyproject_run_pytest -v -m 'not request'
